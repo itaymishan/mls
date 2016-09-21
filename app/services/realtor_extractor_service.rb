@@ -1,6 +1,5 @@
 class RealtorExtractorService
 
-
   def fetch_listings(coords_adjust)
     while true do
       cur_page = 1
