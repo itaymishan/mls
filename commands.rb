@@ -8,4 +8,4 @@ RealtorEntry.not_exported.each{|re| res = RealtorDataAdapter.new(re.data).create
 EmailWorker.perform
 ExportWorker.perform
 i = 0; while i<20 do SaleListing.all.sample.fetch_current_nearby ; i = i+1 ; sleep(20) end
-i = 0; while i<20 do RentListing.all.sample.fetch_current_nearby ; i = i+1 ; sleep(3) end
+i = 0; while i<2000 do RentListing.all.sample.fetch_current_nearby ; i = i+1 ; sleep(1) end

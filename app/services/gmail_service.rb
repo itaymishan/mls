@@ -4,14 +4,18 @@ class GmailService
     urls = []
     Gmail.new('listings.data@gmail.com', 'itaym777') do |gmail|
       emails = gmail.inbox.emails(:unread).each{|email|
+        begin
+          email_body = email.body.to_s
+          if email_body.include?(START_URL_MARKER)
+            url_key_start = email_body.index(START_URL_MARKER) + START_URL_MARKER.size
+            url_key_end = email_body.index(END_URL_MARKER) - 1
+            urls << build_link(email_body[url_key_start..url_key_end])
+            email.read!
+          end
+        rescue
+          puts "Error reading #{email}"
+        end
       puts "Read Email Executing"
-      email_body = email.body.to_s     
-      if email_body.include?(START_URL_MARKER)       
-        url_key_start = email_body.index(START_URL_MARKER) + START_URL_MARKER.size
-        url_key_end = email_body.index(END_URL_MARKER) - 1
-        urls << build_link(email_body[url_key_start..url_key_end])   
-        email.read!
-      end
     }
     end
     urls

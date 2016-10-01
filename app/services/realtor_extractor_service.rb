@@ -1,6 +1,5 @@
 class RealtorExtractorService
 
-
   def fetch_listings(coords_adjust)
     while true do
       cur_page = 1
@@ -83,7 +82,6 @@ class RealtorExtractorService
               RealtorEntry.find_or_create_by(mls_id: result['MlsNumber']) do |entry|
                 entry.data = result
               end
-              # RealtorEntry.create(mls_id: result['MlsNumber'], data: result)
             }
             cur_page += 1
           else
@@ -92,7 +90,7 @@ class RealtorExtractorService
         end
         cur_page
       rescue => exception
-
+        puts exception
       end
   end
 
@@ -103,7 +101,7 @@ class RealtorExtractorService
       RecordsPerPage: 9,
       MaximumResults: 9,
       PropertySearchTypeId: 1,
-      TransactionTypeId: 1,
+      TransactionTypeId: 1, # (rent: 3, sale: 2, rent\sale: 1)
       PropertyTypeGroupID: 1,
       LongitudeMin: -79.4065437316895,
       LongitudeMax: -79.08485031127934,
