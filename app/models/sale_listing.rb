@@ -69,6 +69,10 @@ class SaleListing < ActiveRecord::Base
     near([latitude, longitude], 1)
   }
 
+  scope :check_statusable, -> {
+    where(status: RentListing.statuses[:active])
+  }
+
   # before_save :calculate_expected_return_rate
 
 # results = Geocoder.search("#328 - 60 FAIRFAX CRES,Toronto, Ontario M1L1Z8")
@@ -97,4 +101,13 @@ class SaleListing < ActiveRecord::Base
     [self.latitude, self.longitude]
   end
 
+  def check_status
+    url = 'https://api2.realtor.ca/Listing.svc/PropertySearch_Post'
+    body = "CultureId=1&ApplicationId=1&ReferenceNumber=#{mls_id}&IncludeTombstones=1"
+    result = HttpAdapter.post(body, url)
+    if result['Paging']['TotalPages'] < 1
+      status = 'not_found'
+      save
+    end
+  end
 end

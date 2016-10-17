@@ -62,9 +62,22 @@ class RentListing < ActiveRecord::Base
   enum basement_type: [ :finished, :apartment, :unfinished, :crawl_space, :no_basement]
   enum home_type: [ :detached, :semi_detached, :condominum, :other ]
 
+  scope :check_statusable, -> {
+    where(status: RentListing.statuses[:active])
+  }
+
   def fetch_current_nearby(margin=0.04)
     RealtorExtractorService.new.fetch_by_geo_location(self.latitude, self.longitude, margin)
   end
 
+  def check_status
+    url = 'https://api2.realtor.ca/Listing.svc/PropertySearch_Post'
+    body = "CultureId=1&ApplicationId=1&ReferenceNumber=#{mls_id}&IncludeTombstones=1"
+    result = HttpAdapter.post(body, url)
+    if result['Paging']['TotalPages'] < 1
+      status = 3
+      save
+    end
+  end
 
 end
