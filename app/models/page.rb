@@ -32,7 +32,7 @@ class Page < ActiveRecord::Base
     entries = NewListingParser.new.parse(to_html)
     entries.each{|entry|
       ListingDataAdapterService.new(entry).create_listing
-    }    
+    }
   end
 
   def scrape_html_data_from_url

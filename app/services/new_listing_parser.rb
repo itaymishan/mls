@@ -1,5 +1,6 @@
 require 'open-uri'
 
+# TODO: cleanup
 class NewListingParser
 
 	def parse_url(url)
@@ -21,18 +22,18 @@ class NewListingParser
 		images_links			= []
 
 		# get the summary
-		html.css('tbody tr').each do |link| 
+		html.css('tbody tr').each do |link|
 			general_summaries << link
 		end
 
 		# temporary for tests
-		general_summaries.each{ |summary|			
+		general_summaries.each{ |summary|
 			mls_id = extract_summary_attributes(summary)['ml_num']
 			search_str = "div#"
 			detailed_reports << html.css("#{search_str}#{mls_id}")
 		}
 
-		print_date = extract_print_date(html)		
+		print_date = extract_print_date(html)
 
 		# fetch all images links
 		html.css("img").each do |link|
@@ -65,7 +66,7 @@ private
 			header = page.css("div[class=header]").css("div")[5].text
 			regex = /\d{1,2}\/\d{1,2}\/\d{4}/
 			header[regex]
-		end	
+		end
 		rescue
 			nil
 	end
@@ -74,22 +75,22 @@ private
 		detailed_report_attributes 	= []
 		summary_attributes = []
 		images = {}
-		
+
 		raw_summaries.each{ |summary|
 			summary_attributes.push(extract_summary_attributes(summary))
 		}
 
 		raw_detailed_reports.each{ |detail_report|
-			parsed_detailes = extract_detailed_attributes(detail_report)			
+			parsed_detailes = extract_detailed_attributes(detail_report)
 			detailed_report_attributes.push(parsed_detailes) unless parsed_detailes.blank?
 		}
 
-		# extract images links 
+		# extract images links
 		images = extract_images_urls(raw_images_links)
 
 		# build unique listings
 		mls_ids = summary_attributes.map{|summary| summary['ml_num']}
-		
+
 		hash = {}
 		mls_ids.each{|mls_id|
 			inner_hash = {}
@@ -106,23 +107,23 @@ private
 		form_items = []
 		entry_detailed_attributes = {}
 
-		property_form.css("span[class = 'formitem formfield']").each do |form_item| 
-			form_items << form_item 
+		property_form.css("span[class = 'formitem formfield']").each do |form_item|
+			form_items << form_item
 		end
 
 		form_items.each{|item|
 			if item.css('label').text.present? && item.css('span').text.present?
 				entry_detailed_attributes[item.css('label').text] = item.css('span').text
-			end	
+			end
 		}
 		entry_detailed_attributes
 	end
 
 	def extract_images_urls(images_data)
-		images_links = {}		
+		images_links = {}
 		images_data.each{|image|
-			urls = []			
-			
+			urls = []
+
 			if image.as_json[0][1].blank?
 				return
 			end
@@ -137,7 +138,7 @@ private
 				}
 			end
 			images_links[mls_id] = urls.uniq
-		}		
+		}
 		images_links
 	end
 
@@ -152,9 +153,9 @@ private
 			puts "extract_mls_id_from_image_url Failed, URL #{url}"
 	end
 
-	def extract_summary_attributes(summary_form)		
+	def extract_summary_attributes(summary_form)
 		hash = Hash.from_xml(summary_form.to_s)
-		extra_details 	= JSON.parse(hash["tr"]["data_pop_up"])			
+		extra_details 	= JSON.parse(hash["tr"]["data_pop_up"])
 	end
 
 	def create_listing(html)

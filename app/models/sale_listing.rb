@@ -53,6 +53,7 @@
 #  updated_at           :datetime         not null
 #
 
+# TODO: add data validations + fix enums
 class SaleListing < ActiveRecord::Base
 
   # validations
@@ -74,10 +75,6 @@ class SaleListing < ActiveRecord::Base
   }
 
   # before_save :calculate_expected_return_rate
-
-# results = Geocoder.search("#328 - 60 FAIRFAX CRES,Toronto, Ontario M1L1Z8")
-# Client.where("first_name LIKE '%#{params[:first_name]}%'")
-# RentListing.group(:asking_price).count
 
   def calculate_expected_return_rate
     rented_avarage = RentListing.near(coordinate, 1, units: :km)
@@ -101,13 +98,14 @@ class SaleListing < ActiveRecord::Base
     [self.latitude, self.longitude]
   end
 
+  # TODO: cleanup
   def check_status
-    url = 'https://api2.realtor.ca/Listing.svc/PropertySearch_Post'
+    url = "#{ENV['REALTOR_STATUS_CHECK_URL']}"
     body = "CultureId=1&ApplicationId=1&ReferenceNumber=#{mls_id}&IncludeTombstones=1"
     result = HttpAdapter.post(body, url)
     if result['Paging']['TotalPages'] < 1
-      status = 'not_found'
-      save
+      self.status = 'not_found'
+      save!
     end
   end
 end

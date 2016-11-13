@@ -2,7 +2,7 @@ class GmailService
 
   def self.fetch_urls
     urls = []
-    Gmail.new('listings.data@gmail.com', 'itaym777') do |gmail|
+    Gmail.new(ENV['GMAIL_USERNAME'], ENV['GMAIL_PASSWORD']) do |gmail|
       emails = gmail.inbox.emails(:unread).each{|email|
         begin
           email_body = email.body.to_s
@@ -25,12 +25,11 @@ class GmailService
     key.gsub!("\n", "")
     key.gsub!("3D", "")
     key.gsub!("&", "")
-    base_link = "http://v3.torontomls.net/Live/Pages/Public/Link.aspx?Key=#{key}&App=TREB"
+    base_link = "#{ENV['MLS_URL_EMAIL']}#{key}&App=TREB"
   end
 
 private
 
   START_URL_MARKER  = '?Key='
   END_URL_MARKER    = '&App='
-
 end

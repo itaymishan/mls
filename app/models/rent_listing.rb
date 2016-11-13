@@ -52,7 +52,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #
-
+# TODO: add data validations + fix enums
 class RentListing < ActiveRecord::Base
 
   reverse_geocoded_by :latitude, :longitude
@@ -70,13 +70,14 @@ class RentListing < ActiveRecord::Base
     RealtorExtractorService.new.fetch_by_geo_location(self.latitude, self.longitude, margin)
   end
 
+  # TODO: cleanup
   def check_status
-    url = 'https://api2.realtor.ca/Listing.svc/PropertySearch_Post'
+    url = "#{ENV['REALTOR_STATUS_CHECK_URL']}"
     body = "CultureId=1&ApplicationId=1&ReferenceNumber=#{mls_id}&IncludeTombstones=1"
     result = HttpAdapter.post(body, url)
     if result['Paging']['TotalPages'] < 1
-      status = 3
-      save
+      self.status = 3
+      save!
     end
   end
 

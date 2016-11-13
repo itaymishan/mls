@@ -1,3 +1,4 @@
+# TODO: cleanup
 class ListingDataAdapterService
 
   def initialize(params)
@@ -14,7 +15,7 @@ class ListingDataAdapterService
 
       @property =  Property.find_or_create_by(mls_id: mls_id)
       @property.parsed_data = @info
-      
+
       # Summary data
       @property.mls_id = mls_id
       @property.address       = summary_info['addr'] rescue nil
@@ -31,7 +32,7 @@ class ListingDataAdapterService
         @property.listing_status  = summary_info['lsc'] rescue nil
         @property.bedrooms    = summary_info['br'].to_i rescue nil
         @property.washrooms   = summary_info['bath_tot'].to_i rescue nil
-        
+
         if @property.listing_status == 'New'
             @property.list_price = summary_info['lp_dol'].to_i rescue nil
         elsif @property.listing_status == 'Sld'
@@ -102,10 +103,10 @@ class ListingDataAdapterService
     @property.save!
   end
 
-  def parse_lot(str_lot)    
+  def parse_lot(str_lot)
     return nil if str_lot.blank?
     arr = str_lot.split(' ')
-    hash = {width: arr[0].to_f, length: arr[2].to_f, unit: arr[3]}    
+    hash = {width: arr[0].to_f, length: arr[2].to_f, unit: arr[3]}
   end
 
   def parse_date(date_str)
@@ -121,43 +122,43 @@ class ListingDataAdapterService
   end
 
   def parse_taxes(taxes_str)
-    return nil if taxes_str.blank?    
-    arr = taxes_str.split(' ')    
+    return nil if taxes_str.blank?
+    arr = taxes_str.split(' ')
     arr[0].slice!('$')
     arr[0].slice!(',')
     arr[0]
   end
 
     def parse_price(price_str)
-    return nil if price_str.blank?    
-    arr = price_str.split(' ')    
+    return nil if price_str.blank?
+    arr = price_str.split(' ')
     arr[0].slice!('$')
     arr[0].slice!(',')
     arr[0]
   end
 
   def parse_bedrooms(bedrooms_str)
-    return nil if bedrooms_str.blank?        
+    return nil if bedrooms_str.blank?
     arr = bedrooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_washrooms(washrooms_str)
-    return nil if washrooms_str.blank?        
+    return nil if washrooms_str.blank?
     arr = washrooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_kitchens(kitchens_str)
-    return nil if kitchens_str.blank?        
+    return nil if kitchens_str.blank?
     arr = kitchens_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_total_rooms(rooms_str)
-    return nil if rooms_str.blank?        
+    return nil if rooms_str.blank?
     arr = rooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   # Apx Age : 51-99

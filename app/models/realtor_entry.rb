@@ -14,6 +14,7 @@ class RealtorEntry < ActiveRecord::Base
   # validations
   validates :mls_id, uniqueness: true
 
+  # scopes
   scope :not_exported, -> {
     where(exported_at: nil)
   }

@@ -1,3 +1,4 @@
+# TODO: cleanup
 class RealtorDataAdapter
 
   def initialize(params)
@@ -6,7 +7,7 @@ class RealtorDataAdapter
 
   def create_data_entry
     begin
-      return if @info.blank?     
+      return if @info.blank?
       if @info['Property']['Price'].present?
         create_sale_entry
       elsif @info['Property']['LeaseRent'].present?
@@ -38,7 +39,7 @@ class RealtorDataAdapter
   end
 
   def create_rent_entry
-    rent_listing = RentListing.find_or_create_by(mls_id: @info['MlsNumber'])       
+    rent_listing = RentListing.find_or_create_by(mls_id: @info['MlsNumber'])
     rent_listing.asking_price = parse_rent_asking_price(@info['Property']['LeaseRent'])
     rent_listing.longitude  = @info['Property']['Address']['Longitude'].to_f
     rent_listing.latitude   = @info['Property']['Address']['Latitude'].to_f
@@ -71,27 +72,27 @@ class RealtorDataAdapter
   end
 
   def parse_bedrooms(bedrooms_str)
-    return nil if bedrooms_str.blank?        
+    return nil if bedrooms_str.blank?
     arr = bedrooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_washrooms(washrooms_str)
-    return nil if washrooms_str.blank?        
+    return nil if washrooms_str.blank?
     arr = washrooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_kitchens(kitchens_str)
-    return nil if kitchens_str.blank?        
+    return nil if kitchens_str.blank?
     arr = kitchens_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
   def parse_total_rooms(rooms_str)
-    return nil if rooms_str.blank?        
+    return nil if rooms_str.blank?
     arr = rooms_str.split(' ')
-    hash = {main: arr[0].to_i, basement: arr[2]}   
+    hash = {main: arr[0].to_i, basement: arr[2]}
   end
 
 end

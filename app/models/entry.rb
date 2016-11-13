@@ -27,17 +27,4 @@
 
 class Entry < ActiveRecord::Base
 
-	def get_max_return_streets
-		arr = []
-		postals = Entry.all.pluck(:postal)
-		postals.each{|postal|			
-			avg_lease = Entry.where(postal: postal).where(lsc: 'Lsd').average(:list_price)
-			avg_sale = Entry.where(postal: postal).where(lsc: 'Sld').average(:list_price)			
-			if avg_lease.present? && avg_sale.present?				
-				arr.push({ percent: (((avg_lease*12)-2800) / avg_sale ) * 100, postal: postal })
-			end
-		}
-		arr
-	end
-
 end

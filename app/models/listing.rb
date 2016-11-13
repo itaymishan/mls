@@ -8,10 +8,11 @@
 #  updated_at :datetime         not null
 #
 
+# TODO: Remove model
 class Listing < ActiveRecord::Base
 
-	# after save callback
-	# parse
+	# Validations
+	validates :raw_email, presence: true
 
 	def to_xml
 		info_doc = Nokogiri::XML(self.raw_email)
