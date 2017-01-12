@@ -3,7 +3,7 @@ class StatusWorker
   @queue = :data_validation
 
   def self.perform
-    RentListing.check_statusable.sample(100).each do |rl|
+    RentListing.check_statusable.find_each(batch_size: 50) do |rl|
       begin
         puts "Checking status of #{rl.mls_id}"
         sleep(2)
@@ -19,7 +19,7 @@ class StatusWorker
       end
     end
 
-    SaleListing.check_statusable.sample(100).each do |sl|
+    SaleListing.check_statusable.find_each(batch_size: 50) do |sl|
       begin
         puts "Checking status of #{sl.mls_id}"
         sleep(2)
